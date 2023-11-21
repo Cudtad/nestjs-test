@@ -16,3 +16,15 @@ export interface Address {
   country: string;
   zip: number;
 }
+
+// export interface UserDetails {
+//   _id: string;
+//   email: string;
+//   active: boolean;
+//   name?: string;
+//   phone?: string;
+//   lastLoggedIn?: Date;
+//   roles: string[];
+//   createdAt: Date;
+//   updatedAt: Date;
+// }

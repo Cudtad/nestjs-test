@@ -1,9 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 
-import { UserService } from '../shared/user.service';
+import { UserService } from '../users/user.service';
 import { Payload } from '../types/payload';
 import { LoginDTO, RegisterDTO } from './auth.dto';
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -16,6 +17,7 @@ export class AuthController {
   async login(@Body() userDTO: LoginDTO) {
     const user = await this.userService.findByLogin(userDTO);
     const payload: Payload = {
+      id: user._id,
       username: user.username,
       seller: user.seller,
     };
@@ -27,10 +29,18 @@ export class AuthController {
   async register(@Body() userDTO: RegisterDTO) {
     const user = await this.userService.create(userDTO);
     const payload: Payload = {
+      id: user._id,
       username: user.username,
       seller: user.seller,
     };
     const token = await this.authService.signPayload(payload);
     return { user, token };
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getProfile(@Req() req) {
+    const userInfo = await this.userService.findById(req.user.id);
+    return { ...this.userService.getUserDetails(userInfo) };
   }
 }

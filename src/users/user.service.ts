@@ -54,4 +54,19 @@ export class UserService {
     return sanitized;
     // return user.depopulate('password');
   }
+
+  findById(id: string) {
+    return this.userModel.findById(id);
+  }
+
+  getUserDetails(user: User) {
+    return {
+      _id: user._id,
+      name: user.username,
+      password: user.password,
+      seller: user.seller,
+      address: user.address,
+      created: user.created,
+    };
+  }
 }
